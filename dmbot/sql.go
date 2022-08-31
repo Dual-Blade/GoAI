@@ -17,7 +17,12 @@ func MergeSql(c int) {
 	if err != nil {
 		panic(err)
 	}
-	defer db.Close()
+	defer func(db *gorm.DB) {
+		err := db.Close()
+		if err != nil {
+			fmt.Println(err)
+		}
+	}(db)
 
 	//创建表 自动迁移 （把结构体和数据库表进行对应)
 	if err := db.AutoMigrate(&UpiCount{}); err != nil {
